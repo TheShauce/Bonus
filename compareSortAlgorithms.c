@@ -30,35 +30,100 @@ size_t Size(void* ptr)
 // extraMemoryAllocated counts bytes of memory allocated
 void heapSort(int arr[], int n)
 {
+    // Build heap (rearrange array)
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    // One by one extract an element from heap
+    for (int i=n-1; i>0; i--)
+    {
+        // Move current root to end
+        swap(&arr[0], &arr[i]);
+
+        // call max heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
 }
+
 
 // implement merge sort
 // extraMemoryAllocated counts bytes of extra memory allocated
-void mergeSort(int pData[], int l, int r)
+void mergeSort(int arr[], int l, int r)
 {
-	
+    if (l < r)
+    {
+        // Same as (l+r)/2, but avoids overflow for large l and h
+        int m = l+(r-l)/2;
+
+        // Sort first and second halves
+        mergeSort(arr, l, m);
+        mergeSort(arr, m+1, r);
+
+        merge(arr, l, m, r);
+    }
 }
+
 
 // implement insertion sort
 // extraMemoryAllocated counts bytes of memory allocated
 void insertionSort(int* pData, int n)
 {
-	
+    int i, key, j;
+    for (i = 1; i < n; i++)
+    {
+        key = pData[i];
+        j = i - 1;
+
+        /* Move elements of pData[0..i-1], that are
+        greater than key, to one position ahead
+        of their current position */
+        while (j >= 0 && pData[j] > key)
+        {
+            pData[j + 1] = pData[j];
+            j = j - 1;
+        }
+        pData[j + 1] = key;
+    }
 }
+
 
 // implement bubble sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void bubbleSort(int* pData, int n)
 {
-	
+    int i, j;
+    for (i = 0; i < n-1; i++)     
+        // Last i elements are already in place
+        for (j = 0; j < n-i-1; j++)
+            if (pData[j] > pData[j+1])
+                swap(&pData[j], &pData[j+1]);
 }
+
 
 // implement selection sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void selectionSort(int* pData, int n)
 {
-	
+    for (int i = 0; i < n - 1; i++)
+    {
+        int minIdx = i;
+        for (int j = i + 1; j < n; j++)
+        {
+            if (pData[j] < pData[minIdx])
+            {
+                minIdx = j;
+            }
+        }
+        // Swap if the minimum is not the current element
+        if (minIdx != i)
+        {
+            int temp = pData[i];
+            pData[i] = pData[minIdx];
+            pData[minIdx] = temp;
+        }
+    }
 }
+
 
 // parses input file to an integer array
 int parseData(char *inputFileName, int **ppData)
